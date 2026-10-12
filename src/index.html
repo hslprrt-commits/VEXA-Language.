@@ -1,682 +1,100 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#08090d">
-  <meta name="description" content="VEXA is a custom programming language. Explore its syntax and experiment in the online playground.">
-  <title>VEXA — Programming, Reimagined</title>
-
-  <style>
-    :root {
-      color-scheme: dark;
-      --bg: #08090d;
-      --panel: #101219;
-      --panel-2: #151821;
-      --border: #292d3a;
-      --text: #f4f5fa;
-      --muted: #9ba2b5;
-      --accent: #a855f7;
-      --accent-2: #7c3aed;
-      --green: #65e6a3;
-      --red: #ff7272;
-    }
-
-    * { box-sizing: border-box; }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      margin: 0;
-      background:
-        radial-gradient(ellipse at 50% 0%, #24113b 0, transparent 42%),
-        var(--bg);
-      color: var(--text);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      line-height: 1.6;
-    }
-
-    a { color: inherit; text-decoration: none; }
-    button, textarea { font: inherit; }
-
-    .container {
-      width: min(1120px, calc(100% - 32px));
-      margin-inline: auto;
-    }
-
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      background: rgba(8, 9, 13, .88);
-      border-bottom: 1px solid rgba(255,255,255,.08);
-      backdrop-filter: blur(18px);
-    }
-
-    .nav {
-      min-height: 72px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-    }
-
-    .brand {
-      font-size: 25px;
-      font-weight: 900;
-      letter-spacing: -1.5px;
-    }
-
-    .brand span { color: var(--accent); }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 25px;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .nav-links a:hover { color: white; }
-
-    .button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      min-height: 43px;
-      padding: 10px 17px;
-      border: 1px solid var(--border);
-      border-radius: 11px;
-      background: var(--panel-2);
-      color: white;
-      font-weight: 750;
-      cursor: pointer;
-      transition: transform .18s, border-color .18s, background .18s;
-    }
-
-    .button:hover {
-      transform: translateY(-1px);
-      border-color: var(--accent);
-    }
-
-    .button-primary {
-      border-color: transparent;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-    }
-
-    .button-primary:hover { background: #9333ea; }
-
-    .hero {
-      padding: 88px 0 65px;
-      text-align: center;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 7px 12px;
-      border: 1px solid #59317a;
-      border-radius: 99px;
-      background: #1a1026;
-      color: #d9b8ff;
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 1.3px;
-      text-transform: uppercase;
-    }
-
-    .dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--green);
-      box-shadow: 0 0 12px #65e6a377;
-    }
-
-    h1 {
-      max-width: 850px;
-      margin: 23px auto 16px;
-      font-size: clamp(42px, 8vw, 78px);
-      line-height: 1.04;
-      letter-spacing: -3px;
-    }
-
-    .gradient-text {
-      background: linear-gradient(100deg, #d8b4fe, #a855f7 50%, #818cf8);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    .hero p {
-      max-width: 650px;
-      margin: 0 auto 27px;
-      color: var(--muted);
-      font-size: clamp(15px, 2vw, 18px);
-    }
-
-    .hero-actions {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .section { padding: 48px 0; }
-
-    .section-heading {
-      margin-bottom: 25px;
-    }
-
-    .section-heading h2 {
-      margin: 0 0 7px;
-      font-size: clamp(25px, 4vw, 36px);
-      letter-spacing: -1px;
-    }
-
-    .section-heading p {
-      margin: 0;
-      color: var(--muted);
-    }
-
-    .editor {
-      overflow: hidden;
-      border: 1px solid #343044;
-      border-radius: 17px;
-      background: #0d0f15;
-      box-shadow: 0 25px 80px #0008, 0 0 50px #9333ea0d;
-    }
-
-    .editor-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 13px 16px;
-      border-bottom: 1px solid var(--border);
-      background: #13151d;
-    }
-
-    .file-label {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 13px;
-      font-weight: 750;
-    }
-
-    .file-icon {
-      display: grid;
-      width: 28px;
-      height: 28px;
-      place-items: center;
-      border-radius: 7px;
-      background: #302044;
-      color: #d8b4fe;
-      font-size: 11px;
-      font-weight: 900;
-    }
-
-    .editor-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .editor-actions .button {
-      min-height: 36px;
-      padding: 7px 12px;
-      font-size: 12px;
-    }
-
-    .workspace {
-      display: grid;
-      grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr);
-      min-height: 350px;
-    }
-
-    .code-pane {
-      min-width: 0;
-      border-right: 1px solid var(--border);
-    }
-
-    .pane-heading {
-      padding: 10px 15px;
-      border-bottom: 1px solid #222530;
-      color: #b5bbcb;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 1.2px;
-    }
-
-    #code {
-      display: block;
-      width: 100%;
-      min-height: 330px;
-      padding: 20px;
-      resize: vertical;
-      border: 0;
-      outline: 0;
-      background: #0d0f15;
-      color: #d8b4fe;
-      font: 14px/1.9 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      tab-size: 4;
-      white-space: pre;
-    }
-
-    #code:focus { box-shadow: inset 0 0 0 1px #a855f733; }
-
-    .output-pane { min-width: 0; }
-
-    #output {
-      min-height: 330px;
-      margin: 0;
-      padding: 20px;
-      overflow-wrap: anywhere;
-      white-space: pre-wrap;
-      color: #c4c9d7;
-      font: 13px/1.9 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    }
-
-    #output.error { color: var(--red); }
-    #output.success { color: var(--green); }
-
-    .statusbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 10px 15px;
-      border-top: 1px solid var(--border);
-      background: #13151d;
-      color: var(--muted);
-      font-size: 11px;
-    }
-
-    .status-left { display: flex; align-items: center; gap: 8px; }
-
-    .features {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 16px;
-    }
-
-    .feature {
-      padding: 22px;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      background: linear-gradient(145deg, #13151d, #0d0f14);
-    }
-
-    .feature-mark {
-      display: grid;
-      width: 39px;
-      height: 39px;
-      place-items: center;
-      margin-bottom: 15px;
-      border-radius: 11px;
-      background: #2b1740;
-      color: #d8b4fe;
-      font-size: 19px;
-      font-weight: 900;
-    }
-
-    .feature h3 { margin: 0 0 8px; font-size: 17px; }
-    .feature p { margin: 0; color: var(--muted); font-size: 14px; }
-
-    .docs-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 13px;
-    }
-
-    .doc-item {
-      padding: 17px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: var(--panel);
-    }
-
-    .doc-item strong { display: block; margin-bottom: 7px; }
-    .doc-item code {
-      display: block;
-      overflow-wrap: anywhere;
-      color: #d8b4fe;
-      font-size: 13px;
-    }
-
-    .doc-item p {
-      margin: 8px 0 0;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .notice {
-      margin-top: 18px;
-      padding: 14px 16px;
-      border: 1px solid #574221;
-      border-radius: 10px;
-      background: #211a10;
-      color: #f2d5a0;
-      font-size: 13px;
-    }
-
-    footer {
-      margin-top: 50px;
-      padding: 25px 0;
-      border-top: 1px solid var(--border);
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .footer-inner {
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    @media (max-width: 720px) {
-      .nav { min-height: 62px; }
-      .nav-links { gap: 12px; font-size: 12px; }
-      .nav-links .hide-mobile { display: none; }
-      .nav .button { min-height: 36px; padding: 7px 10px; font-size: 12px; }
-      .hero { padding: 65px 0 40px; }
-      h1 { letter-spacing: -2px; }
-      .workspace { grid-template-columns: 1fr; }
-      .code-pane { border-right: 0; border-bottom: 1px solid var(--border); }
-      #code { min-height: 270px; font-size: 13px; }
-      #output { min-height: 180px; }
-      .features { grid-template-columns: 1fr; }
-      .docs-grid { grid-template-columns: 1fr; }
-      .editor-top { align-items: flex-start; flex-direction: column; }
-      .editor-actions { width: 100%; }
-      .editor-actions .button { flex: 1; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto; }
-      *, *::before, *::after { transition: none !important; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VEXA Language Playground</title>
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 { color: #38bdf8; margin-bottom: 5px; text-align: center; }
+        p { color: #94a3b8; margin-top: 0; text-align: center; }
+        .container {
+            width: 100%;
+            max-width: 700px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 180px;
+            background-color: #1e293b;
+            color: #38bdf8;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: monospace;
+            font-size: 16px;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #0ea5e9;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover { background-color: #0284c7; }
+        .output-box {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 15px;
+            min-height: 100px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            color: #4ade80;
+            box-sizing: border-box;
+        }
+    </style>
 </head>
-
 <body>
-  <header>
-    <div class="container nav">
-      <a class="brand" href="#home" aria-label="VEXA home">VEX<span>A</span></a>
-
-      <nav class="nav-links" aria-label="Main navigation">
-        <a href="#playground">Playground</a>
-        <a href="#features" class="hide-mobile">Features</a>
-        <a href="#docs" class="hide-mobile">Docs</a>
-      </nav>
-
-      <a class="button button-primary" href="#playground">Start Coding</a>
+    <h1>VEXA Language Playground</h1>
+    <p>جرب كتابة وتجربة كود لغة VEXA مباشرة عبر المتصفح</p>
+    
+    <div class="container">
+        <textarea id="code-input">var x = 15
+var y = 25
+print(x + y)
+print("مرحباً بك في موقع لغة VEXA!")</textarea>
+        <button onclick="runCode()">تشغيل الكود (Run)</button>
+        <h3>النتيجة (Output):</h3>
+        <div id="output" class="output-box">اضغط على زر التشغيل لرؤية النتيجة...</div>
     </div>
-  </header>
 
-  <main>
-    <section class="hero container" id="home">
-      <div class="eyebrow"><span class="dot"></span> A language of its own</div>
-      <h1>Build ideas with <span class="gradient-text">VEXA.</span></h1>
-      <p>
-        Meet a custom programming language designed for experimentation,
-        clear syntax, and learning by doing. Write your first program in the
-        VEXA playground.
-      </p>
-      <div class="hero-actions">
-        <a class="button button-primary" href="#playground">Open Playground &rarr;</a>
-        <a class="button" href="#docs">Explore the Syntax</a>
-      </div>
-    </section>
+    <script>
+        async function runCode() {
+            const code = document.getElementById('code-input').value;
+            const outputDiv = document.getElementById('output');
+            outputDiv.textContent = "جاري التنفيذ...";
 
-    <section class="section container" id="playground">
-      <div class="section-heading">
-        <h2>Online Playground</h2>
-        <p>Write VEXA code, run it, and inspect the output.</p>
-      </div>
-
-      <div class="editor">
-        <div class="editor-top">
-          <div class="file-label">
-            <span class="file-icon">VX</span>
-            <span>main.vexa</span>
-          </div>
-
-          <div class="editor-actions">
-            <button class="button" id="resetBtn" type="button">Reset</button>
-            <button class="button" id="exampleBtn" type="button">Load Example</button>
-            <button class="button button-primary" id="runBtn" type="button">Run Code</button>
-          </div>
-        </div>
-
-        <div class="workspace">
-          <div class="code-pane">
-            <div class="pane-heading">EDITOR — VEXA</div>
-            <textarea id="code" aria-label="VEXA code editor" spellcheck="false" autocapitalize="off" autocomplete="off">vforge name = "VEXA"
-vdisr "Hello, " + name
-
-vforge score = 10
-vdisr score + 5
-
-vwhen score > 5
-    vdisr "Condition works!"
-velse
-    vdisr "Condition failed."
-vdone</textarea>
-          </div>
-
-          <div class="output-pane">
-            <div class="pane-heading">OUTPUT</div>
-            <pre id="output" aria-live="polite">Your program output will appear here.
-
-Press "Run Code" to execute.</pre>
-          </div>
-        </div>
-
-        <div class="statusbar">
-          <div class="status-left">
-            <span class="dot"></span>
-            <span id="status">Playground ready</span>
-          </div>
-          <span>VEXA · main.vexa</span>
-        </div>
-      </div>
-
-      <div class="notice">
-        The playground requires the VEXA Python server to be running.
-        This is a development prototype, not a public production sandbox.
-      </div>
-    </section>
-
-    <section class="section container" id="features">
-      <div class="section-heading">
-        <h2>Designed to Experiment</h2>
-        <p>A focused starting point for exploring the VEXA language.</p>
-      </div>
-
-      <div class="features">
-        <article class="feature">
-          <div class="feature-mark">VX</div>
-          <h3>Custom Syntax</h3>
-          <p>VEXA uses its own commands, including vforge, vdisr, and vwhen.</p>
-        </article>
-
-        <article class="feature">
-          <div class="feature-mark">&gt;_</div>
-          <h3>Interactive Playground</h3>
-          <p>Test a program and see the interpreter's output without leaving the page.</p>
-        </article>
-
-        <article class="feature">
-          <div class="feature-mark">{ }</div>
-          <h3>Learn by Building</h3>
-          <p>Start with variables and output, then explore conditions and expressions.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="section container" id="docs">
-      <div class="section-heading">
-        <h2>Syntax Reference</h2>
-        <p>A quick introduction to the commands used in the current interpreter.</p>
-      </div>
-
-      <div class="docs-grid">
-        <article class="doc-item">
-          <strong>Variables</strong>
-          <code>vforge score = 10</code>
-          <p>Create a variable and assign it a value.</p>
-        </article>
-
-        <article class="doc-item">
-          <strong>Output</strong>
-          <code>vdisr "Hello, VEXA!"</code>
-          <p>Print a value or expression.</p>
-        </article>
-
-        <article class="doc-item">
-          <strong>Input</strong>
-          <code>vxin "Your name?" -&gt; name</code>
-          <p>Request input and store it in a variable.</p>
-        </article>
-
-        <article class="doc-item">
-          <strong>Conditions</strong>
-          <code>vwhen score &gt; 5</code>
-          <p>Begin a conditional block. Use velse for the alternative branch and vdone to finish.</p>
-        </article>
-
-        <article class="doc-item">
-          <strong>Finish a Block</strong>
-          <code>vdone</code>
-          <p>Close a supported conditional block.</p>
-        </article>
-
-        <article class="doc-item">
-          <strong>Stop Execution</strong>
-          <code>vhalt</code>
-          <p>Stop the current program.</p>
-        </article>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="container footer-inner">
-      <span><strong>VEXA</strong> — An independent programming language project.</span>
-      <span>Built for experimentation and learning.</span>
-    </div>
-  </footer>
-
-  <script>
-    "use strict";
-
-    const codeEditor = document.getElementById("code");
-    const output = document.getElementById("output");
-    const status = document.getElementById("status");
-    const runButton = document.getElementById("runBtn");
-
-    const defaultCode = codeEditor.value;
-
-    const exampleCode = `vforge name = "VEXA"
-vdisr "Welcome to " + name
-
-vforge level = 7
-
-vwhen level > 5
-    vdisr "Advanced level"
-velse
-    vdisr "Keep learning"
-vdone`;
-
-    function showOutput(message, type = "") {
-      output.textContent = message;
-      output.className = type;
-    }
-
-    async function runCode() {
-      const code = codeEditor.value;
-
-      if (!code.trim()) {
-        showOutput("Please write some VEXA code first.", "error");
-        status.textContent = "No code to run";
-        return;
-      }
-
-      runButton.disabled = true;
-      runButton.textContent = "Running...";
-      status.textContent = "Sending code to the VEXA interpreter...";
-      showOutput("Running program...");
-
-      try {
-        const response = await fetch("/api/run", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ code, inputs: [] })
-        });
-
-        const data = await response.json().catch(() => ({}));
-
-        if (!response.ok) {
-          throw new Error(data.error || `Server returned HTTP ${response.status}`);
+            try {
+                const response = await fetch('/run', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code: code })
+                });
+                const data = await response.json();
+                outputDiv.textContent = data.output || "لا توجد مخرجات.";
+            } catch (err) {
+                outputDiv.textContent = "خطأ في الاتصال بالخادم: " + err;
+            }
         }
-
-        if (data.error) {
-          showOutput(data.error, "error");
-          status.textContent = "Execution failed";
-        } else {
-          showOutput(
-            typeof data.output === "string" ? data.output : "(Program finished with no output)",
-            "success"
-          );
-          status.textContent = "Execution completed";
-        }
-      } catch (error) {
-        showOutput(
-          "Could not run the program.\n\n" +
-          (error.message || "Unknown error") +
-          "\n\nMake sure the VEXA server is running and the /api/run endpoint is available.",
-          "error"
-        );
-        status.textContent = "Connection or execution error";
-      } finally {
-        runButton.disabled = false;
-        runButton.textContent = "Run Code";
-      }
-    }
-
-    runButton.addEventListener("click", runCode);
-
-    document.getElementById("resetBtn").addEventListener("click", () => {
-      codeEditor.value = defaultCode;
-      showOutput('Your program output will appear here.\n\nPress "Run Code" to execute.');
-      status.textContent = "Editor reset";
-    });
-
-    document.getElementById("exampleBtn").addEventListener("click", () => {
-      codeEditor.value = exampleCode;
-      showOutput("Example loaded.\nPress Run Code to execute it.");
-      status.textContent = "Example loaded";
-    });
-
-    codeEditor.addEventListener("keydown", (event) => {
-      if (event.key === "Tab") {
-        event.preventDefault();
-        const start = codeEditor.selectionStart;
-        const end = codeEditor.selectionEnd;
-
-        codeEditor.setRangeText("    ", start, end, "end");
-      }
-
-      if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
-        event.preventDefault();
-        runCode();
-      }
-    });
-  </script>
+    </script>
 </body>
-  </html>
+</html>
