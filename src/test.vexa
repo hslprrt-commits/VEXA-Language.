@@ -1,0 +1,9 @@
+var name = "VEXA"
+var x = 15
+var y = 25
+var total = x + y
+
+print("Welcome to")
+print(name)
+print("The total sum is:")
+print(total)
